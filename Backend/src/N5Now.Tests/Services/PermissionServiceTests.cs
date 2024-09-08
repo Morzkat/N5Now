@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using N5Now.Domain.Repositories;
 using N5Now.Application.Services;
 using N5Now.Domain.Common.Exceptions;
+using N5Now.Domain.Services;
 
 namespace N5Now.Tests.Services
 {
@@ -18,8 +19,9 @@ namespace N5Now.Tests.Services
             // Arrange
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             var permissionRepositoryMock = new Mock<IPermissionRepository>();
+            //var elasticSearch = new Mock<IElasticsearchService>();
 
-            var service = new PermissionService(unitOfWorkMock.Object, null);
+            var service = new PermissionService(unitOfWorkMock.Object, null, null, null);
 
             permissionRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
                 .ReturnsAsync(false);
@@ -48,7 +50,7 @@ namespace N5Now.Tests.Services
 
             var permissionDto = new PermissionDto();
 
-            var service = new PermissionService(unitOfWorkMock.Object, mapperMock.Object);
+            var service = new PermissionService(unitOfWorkMock.Object, mapperMock.Object, null, null);
 
             permissionRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
                 .ReturnsAsync(true);
@@ -84,7 +86,7 @@ namespace N5Now.Tests.Services
                 Name = "Permission 1"
             };
 
-            var service = new PermissionService(unitOfWorkMock.Object, null);
+            var service = new PermissionService(unitOfWorkMock.Object, null, null, null);
 
             permissionRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
                 .ReturnsAsync(false);
@@ -115,7 +117,7 @@ namespace N5Now.Tests.Services
                 }
             };
 
-            var service = new PermissionService(unitOfWorkMock.Object, null);
+            var service = new PermissionService(unitOfWorkMock.Object, null, null, null);
 
             permissionRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
                 .ReturnsAsync(true);
@@ -153,7 +155,7 @@ namespace N5Now.Tests.Services
                 }
             };
 
-            var service = new PermissionService(unitOfWorkMock.Object, mapperMock.Object);
+            var service = new PermissionService(unitOfWorkMock.Object, mapperMock.Object, null, null);
 
             permissionRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
                 .ReturnsAsync(true);
@@ -184,7 +186,7 @@ namespace N5Now.Tests.Services
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             var permissionRepositoryMock = new Mock<IPermissionRepository>();
 
-            var service = new PermissionService(unitOfWorkMock.Object, null);
+            var service = new PermissionService(unitOfWorkMock.Object, null, null, null);
 
             permissionRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
                 .ReturnsAsync(false);
@@ -211,7 +213,7 @@ namespace N5Now.Tests.Services
                 Name = "Permission1"
             };
 
-            var service = new PermissionService(unitOfWorkMock.Object, mapperMock.Object);
+            var service = new PermissionService(unitOfWorkMock.Object, mapperMock.Object, null, null);
 
             permissionRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
                 .ReturnsAsync(true);
