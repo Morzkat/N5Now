@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace N5Now.Domain.DTOs
 {
-    public class PermissionDto
+    public class EmployeeDto
     {
         public int Id { get; set; }
-        public EmployeeDto Employee { get; set; }
-        public PermissionTypeDto PermissionType { get; set; }
-        public DateTime? Date { get; set; }
+        public string Name { get; set; }
+        public string LastName { get; set; }
     }
 }

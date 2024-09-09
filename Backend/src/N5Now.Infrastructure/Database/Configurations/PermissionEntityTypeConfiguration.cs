@@ -8,8 +8,6 @@ namespace N5Now.Infrastructure.Database.Configurations
     {
         public void Configure(EntityTypeBuilder<Permission> builder)
         {
-            builder.Property(p => p.Name).IsRequired();
-            builder.Property(p => p.LastName).IsRequired();
             builder.Property(p => p.Date).IsRequired();
             builder.Property(p => p.Date).HasDefaultValue(DateTime.Now);
         }

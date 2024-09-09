@@ -1,17 +1,18 @@
-﻿using AutoMapper;
-using MediatR;
-using N5Now.Infrastructure.Permissions.Commands;
-using N5Now.Infrastructure.Permissions.Queries;
+﻿using MediatR;
+using AutoMapper;
 using N5Now.Domain.DTOs;
 using N5Now.Domain.Entities;
 using N5Now.Domain.Services;
+using N5Now.Infrastructure.Permissions.Queries;
+using N5Now.Infrastructure.Permissions.Commands;
 
 namespace N5Now.Infrastructure.Permissions
 {
     public class PermissionsHandler :
         IRequestHandler<GetPermissionsQuery, IEnumerable<PermissionDto>>,
         IRequestHandler<CreatePermissionCommand, PermissionDto>,
-        IRequestHandler<UpdatePermissionCommand, PermissionDto>
+        IRequestHandler<UpdatePermissionCommand, PermissionDto>,
+        IRequestHandler<DeletePermissionTypeCommand>
     {
         private readonly IMapper _mapper;
         private readonly IPermissionService _permissionService;
@@ -36,9 +37,12 @@ namespace N5Now.Infrastructure.Permissions
         public async Task<PermissionDto> Handle(UpdatePermissionCommand request, CancellationToken cancellationToken)
         {
             var permission = _mapper.Map<Permission>(request);
-            await _permissionService.UpdatePermission(permission);
+            return await _permissionService.UpdatePermission(permission);
+        }
 
-            return null;
+        public async Task Handle(DeletePermissionTypeCommand request, CancellationToken cancellationToken)
+        {
+            await _permissionService.DeletePermission(request.Id);
         }
     }
 }

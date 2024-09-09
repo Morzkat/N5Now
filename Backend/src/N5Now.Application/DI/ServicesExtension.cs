@@ -18,6 +18,7 @@ namespace N5Now.Application.DI
             var kafkaServer = configuration.GetValue<string>("KafkaServer");
             services.AddSingleton<IProducerService<OperationMessage>>(new KafkaProducerService(kafkaServer));
 
+            services.AddScoped<IEmployeeService, EmployeesService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IPermissionTypeService, PermissionTypeService>();
 

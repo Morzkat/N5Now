@@ -10,15 +10,21 @@ namespace N5Now.Infrastructure.Database
 {
     public class UnitOfWork : IUnitOfWork
     {
+        public IEmployeesRepository EmployeeRepository { get; set; }
         public IPermissionRepository PermissionRepository { get; set; }
         public IPermissionTypeRepository PermissionTypeRepository { get; set; }
 
         private readonly N5NowContext _n5NowContext;
 
-        public UnitOfWork(N5NowContext n5NowContext, IPermissionRepository permissionRepository, IPermissionTypeRepository permissionTypeRepository)
+        public UnitOfWork(N5NowContext n5NowContext,
+            IPermissionRepository permissionRepository,
+            IPermissionTypeRepository permissionTypeRepository,
+            IEmployeesRepository employeesRepository
+            )
         {
             _n5NowContext = n5NowContext;
 
+            EmployeeRepository = employeesRepository;
             PermissionRepository = permissionRepository;
             PermissionTypeRepository = permissionTypeRepository;
         }

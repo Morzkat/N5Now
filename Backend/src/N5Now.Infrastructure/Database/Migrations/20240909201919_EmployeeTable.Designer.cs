@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using N5Now.Infrastructure.Database;
 
@@ -11,9 +12,11 @@ using N5Now.Infrastructure.Database;
 namespace N5Now.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(N5NowContext))]
-    partial class N5NowContextModelSnapshot : ModelSnapshot
+    [Migration("20240909201919_EmployeeTable")]
+    partial class EmployeeTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

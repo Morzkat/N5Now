@@ -3,6 +3,7 @@ using MediatR;
 using N5Now.Domain.DTOs;
 using N5Now.Domain.Entities;
 using N5Now.Domain.Services;
+using N5Now.Infrastructure.Permissions.Commands;
 using N5Now.Infrastructure.PermissionTypes.Commands;
 using N5Now.Infrastructure.PermissionTypes.Queries;
 
@@ -11,7 +12,8 @@ namespace N5Now.Infrastructure.PermissionTypes
     public class PermissionTypesHandler :
         IRequestHandler<GetPermissionTypesQuery, IEnumerable<PermissionTypeDto>>,
         IRequestHandler<CreatePermissionTypeCommand, PermissionTypeDto>,
-        IRequestHandler<UpdatePermissionTypeCommand, PermissionTypeDto>
+        IRequestHandler<UpdatePermissionTypeCommand, PermissionTypeDto>,
+        IRequestHandler<DeletePermissionTypeCommand>
     {
         private readonly IMapper _mapper;
         private readonly IPermissionTypeService _permissionTypeService;
@@ -37,6 +39,11 @@ namespace N5Now.Infrastructure.PermissionTypes
         {
             var permissionType = _mapper.Map<PermissionType>(request);
             return await _permissionTypeService.UpdatePermissionType(permissionType);
+        }
+
+        public async Task Handle(DeletePermissionTypeCommand request, CancellationToken cancellationToken)
+        {
+            await _permissionTypeService.DeletePermissionType(request.Id);
         }
 
     }

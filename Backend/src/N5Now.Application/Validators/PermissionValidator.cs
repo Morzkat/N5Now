@@ -9,10 +9,10 @@ namespace N5Now.App.Validators
     {
         public PermissionValidator()
         {
-            RuleFor(x => x.Name).NotNull();
-            RuleFor(x => x.LastName).NotNull();
-            RuleFor(x => x.PermissionType).NotNull();
-            RuleFor(x => x.PermissionType).SetValidator(new PermissionTypeValidator());
+            RuleFor(x => x.Employee).NotNull()
+                .SetValidator(new EmployeeValidator());
+            RuleFor(x => x.PermissionType).NotNull()
+                .SetValidator(new PermissionTypeValidator());
             RuleFor(x => x.Date).NotNull();
         }
     }
@@ -21,8 +21,7 @@ namespace N5Now.App.Validators
     {
         public CreatePermissionValidator()
         {
-            RuleFor(x => x.Name).NotNull();
-            RuleFor(x => x.LastName).NotNull();
+            RuleFor(x => x.Employee).NotNull();
             RuleFor(x => x.PermissionType).NotNull();
             RuleFor(x => x.Date).NotNull();
         }
@@ -32,8 +31,7 @@ namespace N5Now.App.Validators
     {
         public UpdatePermissionValidator()
         {
-            RuleFor(x => x.Name).NotNull();
-            RuleFor(x => x.LastName).NotNull();
+            RuleFor(x => x.Employee).NotNull();
             RuleFor(x => x.PermissionType).NotNull();
             RuleFor(x => x.Date).NotNull();
         }

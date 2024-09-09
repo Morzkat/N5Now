@@ -18,7 +18,8 @@ namespace N5Now.Infrastructure.ExtensionMethods.DI
                 return new UnitOfWork(
                     context,
                     new PermissionRepository(context.Permissions),
-                    new PermissionTypeRepository(context.PermissionTypes)
+                    new PermissionTypeRepository(context.PermissionTypes),
+                    new EmployeesRepository(context.Employees)
                 );
             });
             return serviceCollection;
