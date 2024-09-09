@@ -25,5 +25,12 @@ namespace N5Now.Api.Controllers
 
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] UpdatePermissionCommand permission) => Ok(await _mediator.Send(permission));
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] DeletePermissionCommand permission)
+        {
+            await _mediator.Send(permission);
+            return Ok();
+        }
     }
 }
