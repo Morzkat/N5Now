@@ -29,6 +29,11 @@ namespace N5Now.Application.Services
             if (!permissionTypeExist)
                 throw new ConflictException("The permission type doesn't exist.");
 
+            var employeeExist = await _unitOfWork.EmployeeRepository.ExistAsync(x => x.Id == permission.Employee.Id);
+            if (!employeeExist)
+                throw new ConflictException("The employee doesn't exist.");
+
+            permission.Employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(permission.Employee.Id);
             permission.PermissionType = await _unitOfWork.PermissionTypeRepository.GetByIdAsync(permission.PermissionType.Id);
             await _unitOfWork.PermissionRepository.AddAsync(permission);
             await _unitOfWork.SaveAsync();
@@ -44,10 +49,15 @@ namespace N5Now.Application.Services
             if (!exists)
                 throw new ConflictException("The permission doesn't exist");
 
+            var employeeExist = await _unitOfWork.EmployeeRepository.ExistAsync(x => x.Id == permission.Employee.Id);
+            if (!employeeExist)
+                throw new ConflictException("The employee doesn't exist.");
+
             var permissionTypeExist = await _unitOfWork.PermissionTypeRepository.ExistAsync(x => x.Id == permission.PermissionType.Id);
             if (!permissionTypeExist)
                 throw new ConflictException("The permission type doesn't exist.");
 
+            permission.Employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(permission.Employee.Id);
             permission.PermissionType = await _unitOfWork.PermissionTypeRepository.GetByIdAsync(permission.PermissionType.Id);
             await _unitOfWork.PermissionRepository.UpdateAsync(permission);
             await _unitOfWork.SaveAsync();
@@ -74,7 +84,7 @@ namespace N5Now.Application.Services
             if (!exists)
                 throw new NotFoundException("The permission doesn't exist.");
 
-            var permission = await _unitOfWork.PermissionRepository.GetByIdAsync(permissionId, new List<string> { "PermissionType" });
+            var permission = await _unitOfWork.PermissionRepository.GetByIdAsync(permissionId, new List<string> { "PermissionType", "Employee" });
             var permissionDto = _mapper.Map<PermissionDto>(permission);
 
             return permissionDto;
@@ -82,7 +92,7 @@ namespace N5Now.Application.Services
 
         public async Task<IEnumerable<PermissionDto>> GetPermissions()
         {
-            var permissions = await _unitOfWork.PermissionRepository.GetAllAsync(entitiesToInclude: new List<string> { "PermissionType" });
+            var permissions = await _unitOfWork.PermissionRepository.GetAllAsync(entitiesToInclude: new List<string> { "PermissionType", "Employee" });
             var permissionsDto = _mapper.Map<IEnumerable<PermissionDto>>(permissions);
 
            // await _kafkaProducer.Publish(new OperationMessage(Operation.get));

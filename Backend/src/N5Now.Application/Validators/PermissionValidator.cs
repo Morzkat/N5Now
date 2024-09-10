@@ -31,6 +31,7 @@ namespace N5Now.App.Validators
     {
         public UpdatePermissionValidator()
         {
+            RuleFor(x => x.Id).NotNull();
             RuleFor(x => x.Employee).NotNull();
             RuleFor(x => x.PermissionType).NotNull();
             RuleFor(x => x.Date).NotNull();

@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using N5Now.Domain.DTOs;
 using N5Now.Infrastructure.Employees.Command;
-using N5Now.Infrastructure.Permissions.Commands;
-using N5Now.Infrastructure.Permissions.Queries;
+using N5Now.Infrastructure.Employees.Queries;
 
 namespace N5Now.Api.Controllers
 {
@@ -19,7 +18,7 @@ namespace N5Now.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get() => Ok(await _mediator.Send(new GetPermissionsQuery()));
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get() => Ok(await _mediator.Send(new GetEmployeesQuery()));
 
         [HttpPost]
         public async Task<ActionResult<EmployeeDto>> Post([FromBody] CreateEmployeeCommand employee) => Ok(await _mediator.Send(employee));

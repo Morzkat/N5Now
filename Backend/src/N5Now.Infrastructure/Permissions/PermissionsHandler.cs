@@ -12,7 +12,7 @@ namespace N5Now.Infrastructure.Permissions
         IRequestHandler<GetPermissionsQuery, IEnumerable<PermissionDto>>,
         IRequestHandler<CreatePermissionCommand, PermissionDto>,
         IRequestHandler<UpdatePermissionCommand, PermissionDto>,
-        IRequestHandler<DeletePermissionTypeCommand>
+        IRequestHandler<DeletePermissionCommand>
     {
         private readonly IMapper _mapper;
         private readonly IPermissionService _permissionService;
@@ -40,7 +40,7 @@ namespace N5Now.Infrastructure.Permissions
             return await _permissionService.UpdatePermission(permission);
         }
 
-        public async Task Handle(DeletePermissionTypeCommand request, CancellationToken cancellationToken)
+        public async Task Handle(DeletePermissionCommand request, CancellationToken cancellationToken)
         {
             await _permissionService.DeletePermission(request.Id);
         }
