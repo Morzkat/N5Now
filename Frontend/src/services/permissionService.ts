@@ -1,3 +1,4 @@
+import { PermissionDto } from "../dtos/PermissionDto";
 import { Permission } from "../models/permission";
 import apiService from "./api.service";
 
@@ -12,7 +13,7 @@ export const getAllPermissions = async (): Promise<Permission[]> => {
     }
 };
 
-export const createPermission = async (permission: Permission): Promise<Permission> => {
+export const createPermission = async (permission: PermissionDto): Promise<Permission> => {
     try {
         const response = await apiService.post(`${endpoint}`, permission);
         return response.data;
@@ -21,13 +22,23 @@ export const createPermission = async (permission: Permission): Promise<Permissi
     }
 };
 
-export const updatePermission = async (permission: Permission): Promise<Permission> => {
+export const updatePermission = async (permission: PermissionDto): Promise<Permission> => {
     try {
-        const response = await apiService.put(`${endpoint}/${permission.id}`, permission);
+        const response = await apiService.put(`${endpoint}`, permission);
         return response.data;
     } catch (error) {
         throw error;
     }
 };
 
+export const deletePermission = async (permissionId: number | undefined): Promise<boolean> => {
+    try {
+        const response = await apiService.delete(`${endpoint}`, {data: { id: permissionId }});
+        if (response.status !== 200) return false;
+
+        return true;
+    } catch (error) {
+        throw error;
+    }
+}
 

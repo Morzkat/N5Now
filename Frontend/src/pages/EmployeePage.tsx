@@ -13,38 +13,38 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import N5NowModal from '../components/N5NowModal';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, Grid } from '@mui/material';
-import { deleteEmployee } from '../services/employeesService';
-import PermissionForm from '../components/PermissionForm';
-import { formattedDate } from '../utils/date/dateUtils';
+import { deleteEmployee, getAllEmployees } from '../services/employeesService';
+import { Employee } from '../models/employee';
+import EmployeeForm from '../components/EmployeeForm';
 
-export default function PermissionPage() {
+export default function EmployeePage() {
 
-  const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
 
-  async function fetchPermissions() {
+  async function fetchEmployees() {
     try {
-      const response = await getAllPermissions();
-      setPermissions(response);
+      const response = await getAllEmployees();
+      setEmployees(response);
     } catch (error) {
       console.error(error);
     }
   }
 
-  async function handleDeletePermission(permissionId: number | undefined) {
+  async function handleDeleteEmployee(employeeId: number | undefined) {
     try {
-      const response = await deletePermission(permissionId);
-    } catch (error) {
+      const response = await deleteEmployee(employeeId);
+  } catch (error) {
       console.error(error);
-    }
+  }
   }
 
   useEffect(() => {
-    fetchPermissions();
+    fetchEmployees();
   }, []);
 
   return (
     <>
-      <N5NowModal openModalTag={<p>Add Permission</p>} content={<PermissionForm />} />
+      <N5NowModal openModalTag={<p>Add Employee</p>} content={<EmployeeForm />} />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 1050 }} aria-label="simple table">
           <TableHead>
@@ -52,27 +52,21 @@ export default function PermissionPage() {
               <TableCell align="right">Id</TableCell>
               <TableCell align="right">Name</TableCell>
               <TableCell align="right">Last Name</TableCell>
-              <TableCell align="right">Permission Type</TableCell>
-              <TableCell align="right">Date</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {permissions.map((permission) => (
+            {employees.map((employee) => (
               <TableRow
-                key={permission.id}
+                key={employee.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell align="right" component="th" scope="row"> {permission.id} </TableCell>
-                <TableCell align="right">{permission.employee.name}</TableCell>
-                <TableCell align="right">{permission.employee.lastName}</TableCell>
-                <TableCell align="right">{permission.permissionType.description}</TableCell>
-                <TableCell align="right">{formattedDate(permission.date)}</TableCell>
+                <TableCell align="right" component="th" scope="row"> {employee.id} </TableCell>
+                <TableCell align="right">{employee.name}</TableCell>
+                <TableCell align="right">{employee.lastName}</TableCell>
                 <TableCell align="right" >
-                  <Grid item xs={8}>
-                    <N5NowModal openModalTag={<BorderColorIcon />} content={<PermissionForm permission={permission} />} />
-                    <Button onClick={async () => await handleDeletePermission(permission.id)}><DeleteIcon /></Button>
-                  </Grid>
+                    <N5NowModal openModalTag={<BorderColorIcon />} content={<EmployeeForm employee={employee} />} />
+                    <Button onClick={async () => await handleDeleteEmployee(employee.id)}><DeleteIcon /></Button>
                 </TableCell>
               </TableRow>
             ))}
