@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PermissionPage from './pages/permissionPage';
 import Layout from './components/layout';
 import EmployeePage from './pages/EmployeePage';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (

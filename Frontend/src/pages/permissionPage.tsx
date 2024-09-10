@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,10 +11,12 @@ import { deletePermission, getAllPermissions } from '../services/permissionServi
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import N5NowModal from '../components/N5NowModal';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button, Grid } from '@mui/material';
-import { deleteEmployee } from '../services/employeesService';
+import { Button } from '@mui/material';
 import PermissionForm from '../components/PermissionForm';
 import { formattedDate } from '../utils/date/dateUtils';
+import * as toastService from './../services/toastService';
+import { ToastContainer } from 'react-toastify';
+
 
 export default function PermissionPage() {
 
@@ -32,8 +33,16 @@ export default function PermissionPage() {
 
   async function handleDeletePermission(permissionId: number | undefined) {
     try {
-      const response = await deletePermission(permissionId);
+      const deleted = await deletePermission(permissionId);
+      if (deleted) {
+        toastService.success('Permission deleted it.')
+        fetchPermissions();
+      }
+      else
+        toastService.error('Error deleting permission.')
+
     } catch (error) {
+      toastService.error('Error deleting permission.')
       console.error(error);
     }
   }
@@ -44,7 +53,7 @@ export default function PermissionPage() {
 
   return (
     <>
-      <N5NowModal openModalTag={<p>Add Permission</p>} content={<PermissionForm />} />
+      <N5NowModal openModalTag={<p>Add Permission</p>} content={<PermissionForm callback={fetchPermissions} />}  />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 1050 }} aria-label="simple table">
           <TableHead>
@@ -67,18 +76,17 @@ export default function PermissionPage() {
                 <TableCell align="right">{permission.employee.name}</TableCell>
                 <TableCell align="right">{permission.employee.lastName}</TableCell>
                 <TableCell align="right">{permission.permissionType.description}</TableCell>
-                <TableCell align="right">{formattedDate(permission.date)}</TableCell>
+                <TableCell align="right">{formattedDate(permission?.date?.toString() || '')}</TableCell>
                 <TableCell align="right" >
-                  <Grid item xs={8}>
-                    <N5NowModal openModalTag={<BorderColorIcon />} content={<PermissionForm permission={permission} />} />
-                    <Button onClick={async () => await handleDeletePermission(permission.id)}><DeleteIcon /></Button>
-                  </Grid>
+                  <N5NowModal openModalTag={<BorderColorIcon />} content={<PermissionForm permission={permission} callback={fetchPermissions} />} />
+                  <Button onClick={async () => await handleDeletePermission(permission.id)}><DeleteIcon /></Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <ToastContainer />
     </>
 
   );

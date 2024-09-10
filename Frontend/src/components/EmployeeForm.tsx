@@ -1,20 +1,17 @@
 import * as React from 'react';
 import { Employee } from '../models/employee';
 import { useState, useEffect, FormEvent } from 'react';
-import { createEmployee, getAllEmployees, updateEmployee } from '../services/employeesService';
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import { createEmployee, updateEmployee } from '../services/employeesService';
+import { Box, Button, TextField } from '@mui/material';
+import * as toastService from './../services/toastService';
 
-
-export default function EmployeeForm({ employee }: { employee?: Employee }) {
+export default function EmployeeForm({ employee, callback }: { employee?: Employee, callback: () => Promise<void> }) {
     const [name, setName] = useState(employee?.name || '');
     const [lastName, setLastName] = useState(employee?.lastName || '');
-
     const [isNewEmployee, setIsNewEmployee] = useState(true);
 
     useEffect(() => {
-
         if (employee) setIsNewEmployee(false);
-
     }, []);
 
     const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,12 +29,20 @@ export default function EmployeeForm({ employee }: { employee?: Employee }) {
             lastName,
         };
 
-        if (isNewEmployee) {
-            const response = await createEmployee(payload);
-        }
-        else {
-            payload.id = employee?.id;
-            const response = await updateEmployee(payload);
+        try {
+            if (isNewEmployee) {
+                await createEmployee(payload);
+                toastService.success('New employee added.')
+            }
+            else {
+                payload.id = employee?.id;
+                await updateEmployee(payload);
+                toastService.success('employee updated.')
+            }
+            await callback();
+        } catch (error) {
+            toastService.error('Error executing action.')
+            console.error(error);
         }
     };
 

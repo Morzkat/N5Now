@@ -7,10 +7,10 @@ import { PermissionType } from '../models/permissionType';
 import { getAllEmployees } from '../services/employeesService';
 import { createPermission, updatePermission } from '../services/permissionService';
 import { getAllPermissionTypes } from '../services/permissionTypesService';
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import * as toastService from './../services/toastService';
 
-
-export default function PermissionForm({ permission }: { permission?: Permission }) {
+export default function PermissionForm({ permission, callback }: { permission?: Permission, callback: () => Promise<void> }) {
     const [employee, setEmployee] = useState(permission?.employee?.id || 0);
     const [permissionType, setPermissionType] = useState(permission?.permissionType?.id || 0);
     const [date, setDate] = useState<Date>(permission?.date || new Date());
@@ -64,14 +64,21 @@ export default function PermissionForm({ permission }: { permission?: Permission
             date: new Date(),
         };
 
-        if (isNewPermission) {
-            const response = await createPermission(payload);
-            console.log('event: ', response);
-        }
-        else {
-            payload.id = permission?.id;
-            const response = await updatePermission(payload);
-            console.log('event: ', response);
+        try {
+            if (isNewPermission) {
+                await createPermission(payload);
+                toastService.success('New permission added.')
+            }
+            else {
+                payload.id = permission?.id;
+                await updatePermission(payload);
+                toastService.success('Permission updated.')
+            }
+
+            await callback();
+        } catch (error) {
+            toastService.error('Error executing action.')
+            console.error(error);
         }
     };
 
