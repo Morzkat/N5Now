@@ -38,7 +38,7 @@ namespace N5Now.Application.Services
             await _unitOfWork.PermissionRepository.AddAsync(permission);
             await _unitOfWork.SaveAsync();
             await _elasticsearchService.AddOrUpdate(permission, permission.Id.ToString());
-            //await _kafkaProducer.Publish(new OperationMessage(Operation.request));
+            await _kafkaProducer.Publish(new OperationMessage(Operation.request));
 
             return _mapper.Map<PermissionDto>(permission);
         }
@@ -62,7 +62,7 @@ namespace N5Now.Application.Services
             await _unitOfWork.PermissionRepository.UpdateAsync(permission);
             await _unitOfWork.SaveAsync();
             await _elasticsearchService.AddOrUpdate(permission, permission.Id.ToString());
-            //await _kafkaProducer.Publish(new OperationMessage(Operation.modify));
+            await _kafkaProducer.Publish(new OperationMessage(Operation.modify));
 
             return _mapper.Map<PermissionDto>(permission);
         }
@@ -95,7 +95,7 @@ namespace N5Now.Application.Services
             var permissions = await _unitOfWork.PermissionRepository.GetAllAsync(entitiesToInclude: new List<string> { "PermissionType", "Employee" });
             var permissionsDto = _mapper.Map<IEnumerable<PermissionDto>>(permissions);
 
-           // await _kafkaProducer.Publish(new OperationMessage(Operation.get));
+            await _kafkaProducer.Publish(new OperationMessage(Operation.get));
 
             return permissionsDto;
         }
