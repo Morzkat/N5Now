@@ -8,6 +8,7 @@ using N5Now.Domain.Repositories;
 using N5Now.Application.Services;
 using N5Now.Domain.Common.Exceptions;
 using N5Now.Domain.Services;
+using N5Now.Application.Producer.Kafka;
 
 namespace N5Now.Tests.Services
 {
@@ -45,7 +46,6 @@ namespace N5Now.Tests.Services
             var permission = new Permission
             {
                 Id = permissionId,
-                Name = "Permission1"
             };
 
             var permissionDto = new PermissionDto();
@@ -83,7 +83,6 @@ namespace N5Now.Tests.Services
             var permission = new Permission
             {
                 Id = 1,
-                Name = "Permission 1"
             };
 
             var service = new PermissionService(unitOfWorkMock.Object, null, null, null);
@@ -105,22 +104,35 @@ namespace N5Now.Tests.Services
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             var permissionRepositoryMock = new Mock<IPermissionRepository>();
             var permissionTypeRepositoryMock = new Mock<IPermissionTypeRepository>();
+            var employeeRepositoryMock = new Mock<IEmployeesRepository>();
+            var elasticsearchServiceMock = new Mock<IElasticsearchService>();
+            var producerServiceMock = new Mock<IProducerService<OperationMessage>>();
+
+            var mapperMock = new Mock<IMapper>();
 
             var permission = new Permission
             {
                 Id = 1,
-                Name = "Permission 1",
                 PermissionType = new PermissionType
                 {
                     Id = 2,
-                    Description = "PermissionType 1"
+                    Description = "PermissionType 1",
+                },
+                Employee = new Employee
+                {
+                    Id = 1,
+                    Name = "Test",
+                    LastName = "Test",
                 }
             };
 
-            var service = new PermissionService(unitOfWorkMock.Object, null, null, null);
+            var service = new PermissionService(unitOfWorkMock.Object, mapperMock.Object, elasticsearchServiceMock.Object, producerServiceMock.Object);
 
             permissionRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
                 .ReturnsAsync(true);
+
+            employeeRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<Employee, bool>>>()))
+              .ReturnsAsync(true);
 
             permissionTypeRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<PermissionType, bool>>>()))
                 .ReturnsAsync(false);
@@ -130,6 +142,12 @@ namespace N5Now.Tests.Services
 
             unitOfWorkMock.Setup(v => v.PermissionTypeRepository)
                 .Returns(permissionTypeRepositoryMock.Object);
+
+            unitOfWorkMock.Setup(v => v.EmployeeRepository)
+               .Returns(employeeRepositoryMock.Object);
+
+            elasticsearchServiceMock.Setup(v => v.AddOrUpdate(It.IsAny<object>(), It.IsAny<string>()));
+            producerServiceMock.Setup(v => v.Publish(It.IsAny<OperationMessage>()));
 
             // Act => Assert
             Assert.ThrowsAsync<ConflictException>(() => service.UpdatePermission(permission), "The permission type doesn't exist.");
@@ -142,20 +160,29 @@ namespace N5Now.Tests.Services
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             var permissionRepositoryMock = new Mock<IPermissionRepository>();
             var permissionTypeRepositoryMock = new Mock<IPermissionTypeRepository>();
+            var employeeRepositoryMock = new Mock<IEmployeesRepository>();
+            var elasticsearchServiceMock = new Mock<IElasticsearchService>();
+            var producerServiceMock = new Mock<IProducerService<OperationMessage>>();
+
             var mapperMock = new Mock<IMapper>();
 
             var permission = new Permission
             {
                 Id = 1,
-                Name = "Permission 1",
                 PermissionType = new PermissionType
                 {
                     Id = 2,
                     Description = "PermissionType 1"
+                },
+                Employee = new Employee
+                {
+                    Id = 1,
+                    Name = "Test",
+                    LastName = "Test",
                 }
             };
 
-            var service = new PermissionService(unitOfWorkMock.Object, mapperMock.Object, null, null);
+            var service = new PermissionService(unitOfWorkMock.Object, mapperMock.Object, elasticsearchServiceMock.Object, producerServiceMock.Object);
 
             permissionRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<Permission, bool>>>()))
                 .ReturnsAsync(true);
@@ -163,11 +190,20 @@ namespace N5Now.Tests.Services
             permissionTypeRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<PermissionType, bool>>>()))
                 .ReturnsAsync(true);
 
+            employeeRepositoryMock.Setup(v => v.ExistAsync(It.IsAny<Expression<Func<Employee, bool>>>()))
+                .ReturnsAsync(true);
+
             unitOfWorkMock.Setup(v => v.PermissionRepository)
                 .Returns(permissionRepositoryMock.Object);
 
             unitOfWorkMock.Setup(v => v.PermissionTypeRepository)
                 .Returns(permissionTypeRepositoryMock.Object);
+
+            unitOfWorkMock.Setup(v => v.EmployeeRepository)
+                .Returns(employeeRepositoryMock.Object);
+
+            elasticsearchServiceMock.Setup(v => v.AddOrUpdate(It.IsAny<object>(), It.IsAny<string>() ));
+            producerServiceMock.Setup(v => v.Publish(It.IsAny<OperationMessage>()));
 
             // Act
             await service.UpdatePermission(permission);
@@ -210,7 +246,6 @@ namespace N5Now.Tests.Services
             var permission = new Permission
             {
                 Id = permissionId,
-                Name = "Permission1"
             };
 
             var service = new PermissionService(unitOfWorkMock.Object, mapperMock.Object, null, null);
